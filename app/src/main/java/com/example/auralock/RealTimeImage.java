@@ -53,7 +53,12 @@ public class RealTimeImage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
                     String updateState = snapshot.getValue().toString();
-                    textUpdate.setText("The live image is " + updateState);
+                    if(updateState.equals("working")){
+                        textUpdate.setText("Retrieving Image...");
+                    }
+                    if(updateState.equals("complete")){
+                        textUpdate.setText("Image Retrieved!");
+                    }
                     if(updateState.equals("working")){
                         findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
                     }

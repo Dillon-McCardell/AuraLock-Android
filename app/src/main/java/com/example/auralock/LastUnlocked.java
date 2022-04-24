@@ -2,11 +2,18 @@ package com.example.auralock;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,7 +35,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.Calendar;
 import java.util.Date;
 
+
+
 public class LastUnlocked extends AppCompatActivity {
+
     ImageView imageView;
     TextView textName, textTime;
     Button btnHome;
@@ -39,10 +49,18 @@ public class LastUnlocked extends AppCompatActivity {
     private StorageReference mFindImage;
     private DatabaseReference mFindTime;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_unlocked);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel("Notification","Notification",NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+
+        }
 
         imageView = findViewById(R.id.imageView);
         textName = findViewById(R.id.textName);
@@ -75,6 +93,19 @@ public class LastUnlocked extends AppCompatActivity {
                 if(snapshot.exists()){
                     name = snapshot.getValue().toString();
                     textName.setText("Unlocked By: " + name);
+
+                    Intent intent = new Intent(LastUnlocked.this,LastUnlocked.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(LastUnlocked.this,0,intent,PendingIntent.FLAG_IMMUTABLE);
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(LastUnlocked.this, "Notification")
+                            .setSmallIcon(R.drawable.unlock)
+                            .setContentTitle("New Unlock")
+                            .setContentText("Unlocked by "+ name + " at " + time)
+                            .setContentIntent(pendingIntent)
+                            .setAutoCancel(true);
+                    NotificationManagerCompat managerCompat = NotificationManagerCompat.from(LastUnlocked.this);
+                    managerCompat.notify(1,builder.build());
                     mFindImage = mStoreImage.child(name);
                     long MAXBYTES = 1024*1024;
                     mFindImage.getBytes(MAXBYTES).addOnSuccessListener(new OnSuccessListener<byte[]>() {
