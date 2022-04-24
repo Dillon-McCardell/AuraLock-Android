@@ -1,4 +1,8 @@
 # AuraLock
-AuraLock: Facial Recognition Door Lock with an Android Mobile Application
-AuraLock was created as a senior design project by Erin Stanfill and Dillon McCardell.  The door lock and facial recoginiton was constructed around
-  a Raspberry Pi coded using Python, by Dillon McCardell.  The mobile application was constructed on Android Studio using Java, by Erin Stanfill.
+## Android Mobile App
+### AuraLock: Facial Recognition Door Lock with an Android Mobile Application
+This repository houses the java code for the Android Mobile App component of the AuraLock project. 
+To learn more visit [my Portfolio](https://dillonmcc.myportfolio.com/auralock).
+
+* View the code for the software running on the AuraLock Lock Hardware in the [separate repository](https://github.com/DillonMcCardell/AuraLock)
+
